@@ -1,10 +1,12 @@
 package main
 
 import (
+	"archive/zip"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -22,7 +24,51 @@ func walkdir(dir string) {
 				walkdir(dir + string(os.PathSeparator) + f.Name())
 			}
 		}
+		// test for ZIPed arelda SIP
+		if strings.EqualFold(filepath.Ext(dir+string(os.PathSeparator)+f.Name()), ".zip") {
+			zippedareldaSIP(dir + string(os.PathSeparator) + f.Name())
+		}
 	}
+}
+
+// test folder for zipped arelda SIP
+func zippedareldaSIP(zfile string) bool {
+	// fmt.Println("ZIP: " + zfile)
+	// Open a zipped SIP for reading.
+	r, err := zip.OpenReader(zfile)
+	if err != nil {
+		log.Println(err)
+		return false
+	}
+	defer r.Close()
+
+	// Iterate through the files in the zip archive
+	for _, f := range r.File {
+		if f.Name == "header/metadata.xml" {
+			fc, err := f.Open()
+			if err != nil {
+				log.Println(err)
+				return false
+			}
+			defer fc.Close()
+
+			metadata, err := ioutil.ReadAll(fc)
+			if err != nil {
+				log.Println(err)
+				return false
+			}
+			meta := string(metadata)
+			// metadata.xml contains "ablieferungFilesSIP"
+			if strings.Contains(meta, "ablieferungFilesSIP") {
+				// fmt.Println("FilesSIP: " + zfile)
+				if !strings.Contains(meta, "<dateiRef>") {
+					fmt.Println("FilesSIP ohne DateiRef: " + zfile)
+					return true
+				}
+			}
+		}
+	}
+	return false
 }
 
 // test folder for arelda SIP
@@ -39,7 +85,7 @@ func areldaSIP(dir string) bool {
 			// read metadata.xml
 			metadata, err := ioutil.ReadFile(dir + string(os.PathSeparator) + "header" + string(os.PathSeparator) + "metadata.xml")
 			if err != nil {
-				fmt.Println("metadata.xml not found")
+				log.Println(err)
 				return false
 			}
 
