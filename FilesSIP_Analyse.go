@@ -56,15 +56,9 @@ func zippedareldaSIP(zfile string) bool {
 				log.Println(err)
 				return false
 			}
-			meta := string(metadata)
 
-			// metadata.xml contains "ablieferungFilesSIP"
-			if strings.Contains(meta, "ablieferungFilesSIP") {
-				if !strings.Contains(meta, "<dateiRef>") {
-					fmt.Println("FilesSIP ohne DateiRef: " + zfile)
-					return true
-				}
-			}
+			// check for FilesSIP and missing tag <dateiRef>
+			return checkmd(metadata, zfile)
 		}
 	}
 	return false
@@ -87,15 +81,21 @@ func areldaSIP(dir string) bool {
 				return false
 			}
 
-			meta := string(metadata)
+			// check for FilesSIP and missing tag <dateiRef>
+			return checkmd(metadata, dir)
+		}
+	}
+	return false
+}
 
-			// metadata.xml contains "ablieferungFilesSIP"
-			if strings.Contains(meta, "ablieferungFilesSIP") {
-				if !strings.Contains(meta, "<dateiRef>") {
-					fmt.Println("FilesSIP ohne DateiRef: " + dir)
-					return true
-				}
-			}
+// check if metadata.xml is FilesSIP and tag <dateiRef> is missing
+func checkmd(metadata []byte, dir string) bool {
+	meta := string(metadata)
+
+	if strings.Contains(meta, "ablieferungFilesSIP") {
+		if !strings.Contains(meta, "<dateiRef>") {
+			fmt.Println("FilesSIP ohne DateiRef: " + dir)
+			return true
 		}
 	}
 	return false
