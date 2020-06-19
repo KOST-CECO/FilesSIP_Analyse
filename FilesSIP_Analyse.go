@@ -13,7 +13,6 @@ import (
 // read all folder in actual folder and recurse through subsequent folders
 func walkdir(dir string) {
 	files, _ := ioutil.ReadDir(dir)
-	// fmt.Println(dir)
 
 	for _, f := range files {
 
@@ -33,7 +32,7 @@ func walkdir(dir string) {
 
 // test folder for zipped arelda SIP
 func zippedareldaSIP(zfile string) bool {
-	// fmt.Println("ZIP: " + zfile)
+
 	// Open a zipped SIP for reading.
 	r, err := zip.OpenReader(zfile)
 	if err != nil {
@@ -58,9 +57,9 @@ func zippedareldaSIP(zfile string) bool {
 				return false
 			}
 			meta := string(metadata)
+
 			// metadata.xml contains "ablieferungFilesSIP"
 			if strings.Contains(meta, "ablieferungFilesSIP") {
-				// fmt.Println("FilesSIP: " + zfile)
 				if !strings.Contains(meta, "<dateiRef>") {
 					fmt.Println("FilesSIP ohne DateiRef: " + zfile)
 					return true
@@ -80,7 +79,6 @@ func areldaSIP(dir string) bool {
 
 		// only subdirectories "content" and "header"
 		if files[0].Name()+" "+files[1].Name() == "content header" {
-			// fmt.Println("SIP: " + dir)
 
 			// read metadata.xml
 			metadata, err := ioutil.ReadFile(dir + string(os.PathSeparator) + "header" + string(os.PathSeparator) + "metadata.xml")
@@ -90,9 +88,9 @@ func areldaSIP(dir string) bool {
 			}
 
 			meta := string(metadata)
+
 			// metadata.xml contains "ablieferungFilesSIP"
 			if strings.Contains(meta, "ablieferungFilesSIP") {
-				// fmt.Println("FilesSIP: " + dir)
 				if !strings.Contains(meta, "<dateiRef>") {
 					fmt.Println("FilesSIP ohne DateiRef: " + dir)
 					return true
