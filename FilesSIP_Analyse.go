@@ -32,6 +32,8 @@ func walkdir(dir string) {
 
 // test folder for zipped arelda SIP
 func zippedareldaSIP(zfile string) bool {
+	// write progress indicator
+	fmt.Fprintf(os.Stderr, "%s", ".")
 
 	// Open a zipped SIP for reading.
 	r, err := zip.OpenReader(zfile)
@@ -66,6 +68,9 @@ func zippedareldaSIP(zfile string) bool {
 
 // test folder for arelda SIP
 func areldaSIP(dir string) bool {
+	// write progress indicator
+	fmt.Fprintf(os.Stderr, "%s", ".")
+
 	files, _ := ioutil.ReadDir(dir)
 
 	// only 2 subdirectories
@@ -93,8 +98,18 @@ func checkmd(metadata []byte, dir string) bool {
 	meta := string(metadata)
 
 	if strings.Contains(meta, "ablieferungFilesSIP") {
+		// tag <dateiRef> is missing
 		if !strings.Contains(meta, "<dateiRef>") {
-			fmt.Println("FilesSIP ohne DateiRef: " + dir)
+			fmt.Print("\nFilesSIP ohne DateiRef: " + dir)
+			return true
+		}
+		// empty tag <dateiRef>
+		if strings.Contains(meta, "<dateiRef></dateiRef>") {
+			fmt.Print("\nFilesSIP ohne DateiRef: " + dir)
+			return true
+		}
+		if strings.Contains(meta, "<dateiRef/>") {
+			fmt.Print("\nFilesSIP ohne DateiRef: " + dir)
 			return true
 		}
 	}
