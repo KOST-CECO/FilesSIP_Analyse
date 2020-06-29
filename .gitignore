@@ -9,6 +9,6 @@ Thumbs.db
 *.lnk
 *.db
 *.url
-*.exe
+###*.exe
 *.class
 *.jar
