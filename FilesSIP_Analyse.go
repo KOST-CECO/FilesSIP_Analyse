@@ -112,6 +112,7 @@ func checkmd(metadata []byte, dir string) bool {
 			fmt.Print("\nFilesSIP ohne DateiRef: " + dir)
 			return true
 		}
+		return true
 	}
 	return false
 }
@@ -132,6 +133,11 @@ func main() {
 	}
 	if !fo.IsDir() {
 		log.Fatal(os.Args[1] + " is not a folder")
+	}
+
+	// folder is SIP
+	if areldaSIP(os.Args[1]) {
+		os.Exit(0)
 	}
 
 	// recurse through subsequent folders
