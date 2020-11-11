@@ -80,10 +80,17 @@ func areldaSIP(dir string) bool {
 		if files[0].Name()+" "+files[1].Name() == "content header" {
 
 			// read metadata.xml
-			metadata, err := ioutil.ReadFile(dir + string(os.PathSeparator) + "header" + string(os.PathSeparator) + "metadata.xml")
-			if err != nil {
-				log.Println(err)
-				return false
+			metadata, err_1 := ioutil.ReadFile(dir + string(os.PathSeparator) + "header" + string(os.PathSeparator) + "metadata.xml")
+			if err_1 != nil {
+				metadata, err_2 := ioutil.ReadFile(dir + string(os.PathSeparator) + "header" + string(os.PathSeparator) + "old" + string(os.PathSeparator) + "SIP" + string(os.PathSeparator) + "metadata.xml")
+				if err_2 != nil {
+					log.Println(err_1)
+					log.Println(err_2)
+					return false
+				}
+				// metadata found in BAR AIP path
+				// check for FilesSIP and missing tag <dateiRef>
+				return checkmd(metadata, dir)
 			}
 
 			// check for FilesSIP and missing tag <dateiRef>
