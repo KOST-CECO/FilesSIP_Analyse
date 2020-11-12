@@ -15,3 +15,6 @@ FilesSIP_Analyse.exe Ordner 2> null
 
 Mit diesem Aufruf werden alle defekten SIP Name in eine Datei geschrieben:
 FilesSIP_Analyse.exe Ordner > out.txt
+
+Zusatz für das Schweizerische Bundesarchiv: 
+Es werden auch ungezippte SIPs/AIPs erkannt wo sich metadata.xml hier befindet "header/old/SIP/metadata.xml"
